@@ -14,6 +14,9 @@ namespace myWnmp
 {
     public partial class Form1 : Form
     {
+        // windows is show or not now
+        protected bool isShow = false;
+
         public Form1()
         {
             InitializeComponent();
@@ -89,6 +92,8 @@ namespace myWnmp
         private void Form1_Load(object sender, EventArgs e)
         {
             backgroundWorker1.RunWorkerAsync();
+            this.Visible = false;
+            this.ShowInTaskbar = false;
         }
 
         /// <summary>
@@ -127,13 +132,46 @@ namespace myWnmp
             {
                 if (pro != null && !pro.HasExited)
                     pro.Kill();
-
                 if (sIn != null)
                     sIn.Close();
                 if (sOut != null)
                     sOut.Close();
                 if (pro != null)
                     pro.Close();
+            }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = true;
+            this.Visible = false;
+            this.ShowInTaskbar = false;
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            notifyIcon1.Visible = false;
+            System.Environment.Exit(0);
+        }
+
+        private void notifyIcon1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                if (isShow == true)
+                {
+                    this.ShowInTaskbar = false;
+                    this.Visible = false;
+                    isShow = false;
+                }
+                else
+                {
+                    this.WindowState = FormWindowState.Normal;
+                    this.ShowInTaskbar = true;
+                    this.Visible = true;
+                    this.Activate();
+                    isShow = true;
+                }
             }
         }
     }
